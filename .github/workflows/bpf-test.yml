@@ -1,0 +1,48 @@
+name: Bpf-test
+
+on: [push, pull_request]
+
+jobs:
+  native:
+
+    name: Native test
+    runs-on: ubuntu-latest
+
+    env:
+      CARGO_TERM_COLOR: always
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./
+        with:
+          solana-version: v1.13.5
+          rust-version: 1.65
+          workspace: "tests/test-bpf"
+
+      - name: Host test
+        run: |
+          cd tests/test-bpf
+          cargo build
+          cargo test
+
+  bpf:
+
+    name: Bpf tests
+    runs-on: ubuntu-latest
+
+    env:
+      CARGO_TERM_COLOR: always
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./
+        with:
+          solana-version: v1.13.5
+          rust-version: 1.65
+          workspace: "tests/test-bpf"
+
+      - name: Bpf test
+        run: |
+          cd tests/test-bpf
+          cargo build-bpf
+          cargo test-bpf

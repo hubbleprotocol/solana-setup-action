@@ -1,0 +1,21 @@
+name: simple
+
+on: [push, pull_request]
+
+jobs:
+  simple:
+
+    name: Check that solana cli is installed
+    runs-on: ubuntu-latest
+
+    env:
+      CARGO_TERM_COLOR: always
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./
+        with:
+          solana-version: v1.13.6
+
+      - run: |
+          solana --version

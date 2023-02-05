@@ -1,0 +1,29 @@
+name: Anchor
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    name: Anchor test
+    runs-on: ubuntu-latest
+
+    env:
+      CARGO_TERM_COLOR: always
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./
+        with:
+          solana-version: v1.13.5
+          anchor-version: v0.26.0
+          setup-node: 19
+          workspace: "tests/anchor"
+
+      - name: Anchor build & test
+        run: |
+          solana --version | grep 1.13.5
+          anchor --version | grep 0.26
+          cd tests/anchor
+          anchor build
+          anchor test --skip-lint
