@@ -1,0 +1,84 @@
+name: 'Setup Solana SDK'
+description: 'Setup the Solana SDK and the rust toolchain to build and test smart contracts'
+inputs:
+  solana_version:
+    description: "Version of the solana sdk to install (eg. 'v1.13.6'). Avoid symbolic channels (stable, beta and edge) as cache won't get invalidated properly"
+    required: true
+  anchor_version:
+    description: "Optional version of Anchor CLI to install (eg. 'v0.26')"
+  rust_version:
+    description: "Version of rust to install (eg. 'stable'). Will install fmt and clippy"
+    default: 'stable'
+    required: true
+  setup-node:
+    description: 'Optional version of node.js to install (eg. 19). Latest yarn, mocha, ts-mocha and typescript is also installed. If enabled it will also install dependencies with yarn'
+  rust-shared-key:
+    description: 'To share the rust dependencies cache among jobs, provide a common key here.'
+runs:
+  using: "composite"
+  steps:
+      - uses: actions/checkout@v3
+      - name: Install dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pkg-config build-essential libudev-dev
+        shell: bash
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          components: rustfmt, clippy
+          toolchain: ${{ inputs.rust_version }}
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          cache-on-failure: true
+          shared-key: ${{ inputs.rust-shared-key }}
+          key: solana-${{ inputs.solana_version }}
+      - uses: actions/cache@v3
+        name: Cache Solana Tool Suite
+        id: cache-solana
+        with:
+          path: |
+            ~/.cache/solana/
+            ~/.local/share/solana/
+          key: solana-${{ runner.os }}-v0001-${{ inputs.solana_version }}
+      - name: Cache Node Modules
+        if: inputs.setup-node != null
+        uses: actions/cache@v3
+        id: cache-node-modules
+        with:
+          path: |
+            ~/.npm/
+            ~/.yarn/
+            ./node_modules
+          key: npm-${{ runner.os }}-v0001-${{ hashFiles('**/package-lock.json') }}
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.setup-node }}
+        if: inputs.setup-node != null
+      - name: Install global npm dependencies
+        if: inputs.setup-node != null
+        run: |
+          npm install -g yarn
+          npm install -g mocha
+          npm install -g ts-mocha
+          npm install -g typescript
+        shell: bash
+      - name: Install Solana
+        if: steps.cache-solana.outputs.cache-hit != 'true'
+        run: |
+          sh -c "$(curl -sSfL https://release.solana.com/${{ inputs.solana_version }}/install)"
+        shell: bash
+      - name: Enable Solana bins
+        run: |
+          echo "/home/runner/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+        shell: bash
+      - name: Install Anchor
+        if: inputs.anchor_version != null
+        run: |
+          cargo install --git https://github.com/coral-xyz/anchor --tag ${{ inputs.anchor_version }} anchor-cli --locked
+        shell: bash
+      - name: yarn install
+        if: inputs.setup-node != null
+        run: |
+          yarn install
+        shell: bash
