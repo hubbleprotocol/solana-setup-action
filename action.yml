@@ -17,6 +17,10 @@ inputs:
   workspace:
     description: "Optional path to the rust workspace. Default: '.'"
     default: '.'
+outputs:
+  rust-cache-hit:
+    description: "'true' if rust cache has been restored"
+    value: ${{ steps.rust-cache.outputs.cache-hit }}
 runs:
   using: "composite"
   steps:
@@ -31,6 +35,7 @@ runs:
           components: rustfmt, clippy
           toolchain: ${{ inputs.rust-version }}
       - name: Rust Cache
+        id: rust-cache
         uses: Swatinem/rust-cache@v2
         with:
           cache-on-failure: true
