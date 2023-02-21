@@ -17,6 +17,9 @@ inputs:
   workspace:
     description: "Optional path to the rust workspace. Default: '.'"
     default: '.'
+  skip-yarn:
+    description: "Set to true to disable automatic dependency installation with yarn. Default: 'false'"
+    default: 'false'
 outputs:
   rust-cache-hit:
     description: "'true' if rust cache has been restored"
@@ -87,7 +90,7 @@ runs:
           cargo install --git https://github.com/coral-xyz/anchor --tag ${{ inputs.anchor-version }} anchor-cli --locked
         shell: bash
       - name: yarn install
-        if: inputs.setup-node != null
+        if: inputs.setup-node != null && inputs.skip-yarn == 'false'
         run: |
           cd ${{ inputs.workspace }}
           yarn install
