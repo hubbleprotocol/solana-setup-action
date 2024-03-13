@@ -4,7 +4,6 @@ on: [push, pull_request]
 
 jobs:
   build:
-
     name: Anchor test
     runs-on: ubuntu-latest
 
@@ -15,15 +14,15 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./
         with:
-          solana-version: v1.13.5
-          anchor-version: v0.26.0
-          setup-node: 19
+          solana-version: v1.16.18
+          anchor-version: v0.28.0
+          setup-node: 20
           workspace: "tests/anchor"
 
       - name: Anchor build & test
         run: |
-          solana --version | grep 1.13.5
-          anchor --version | grep 0.26
+          solana --version | grep 1.16.18
+          anchor --version | grep 0.28.0
           cd tests/anchor
           anchor build
           anchor test --skip-lint
