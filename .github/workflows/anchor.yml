@@ -16,6 +16,7 @@ jobs:
         with:
           solana-version: v1.16.18
           anchor-version: v0.28.0
+          rust-version: 1.73.0
           setup-node: 20
           workspace: "tests/anchor"
 
