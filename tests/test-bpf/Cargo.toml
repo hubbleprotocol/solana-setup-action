@@ -6,6 +6,7 @@ publish = false
 
 [dependencies]
 solana-program = "=1.16.18"
+ahash = "=0.8.6"
 
 [features]
 test-bpf = []
