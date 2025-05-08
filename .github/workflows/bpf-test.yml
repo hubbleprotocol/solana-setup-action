@@ -20,6 +20,7 @@ jobs:
 
       - name: Host test
         run: |
+          sudo apt-get install libprotobuf-dev protobuf-compiler
           cd tests/test-bpf
           cargo build
           cargo test
@@ -41,6 +42,7 @@ jobs:
 
       - name: Bpf test
         run: |
+          sudo apt-get install libprotobuf-dev protobuf-compiler
           cd tests/test-bpf
           cargo build-bpf
           cargo test-bpf
