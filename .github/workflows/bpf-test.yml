@@ -14,12 +14,13 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./
         with:
-          solana-version: v1.16.18
-          rust-version: 1.73.0
+          solana-version: v1.17.34
+          rust-version: 1.74.1
           workspace: "tests/test-bpf"
 
       - name: Host test
         run: |
+          sudo apt-get install libprotobuf-dev protobuf-compiler
           cd tests/test-bpf
           cargo build
           cargo test
@@ -35,12 +36,13 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./
         with:
-          solana-version: v1.16.18
-          rust-version: 1.73.0
+          solana-version: v1.17.34
+          rust-version: 1.74.1
           workspace: "tests/test-bpf"
 
       - name: Bpf test
         run: |
+          sudo apt-get install libprotobuf-dev protobuf-compiler
           cd tests/test-bpf
           cargo build-bpf
           cargo test-bpf

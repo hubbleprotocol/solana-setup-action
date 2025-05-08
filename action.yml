@@ -2,10 +2,10 @@ name: 'Setup Solana SDK'
 description: 'Setup the Solana SDK and the rust toolchain to build and test smart contracts'
 inputs:
   solana-version:
-    description: "Version of the solana sdk to install (eg. 'v1.16.18'). Avoid symbolic channels (stable, beta and edge) as cache won't get invalidated properly"
+    description: "Version of the solana sdk to install (eg. 'v1.17.34'). Avoid symbolic channels (stable, beta and edge) as cache won't get invalidated properly"
     required: true
   anchor-version:
-    description: "Optional version of Anchor CLI to install (eg. 'v0.28.0')"
+    description: "Optional version of Anchor CLI to install (eg. 'v0.29.0')"
   rust-version:
     description: "Version of rust to install (eg. 'stable'). Will install fmt and clippy"
     default: 'stable'
@@ -78,7 +78,7 @@ runs:
       - name: Install Solana
         if: steps.cache-solana.outputs.cache-hit != 'true'
         run: |
-          sh -c "$(curl -sSfL https://release.solana.com/${{ inputs.solana-version }}/install)"
+          sh -c "$(curl -sSfL https://release.anza.xyz/${{ inputs.solana-version }}/install)"
         shell: bash
       - name: Enable Solana bins
         run: |

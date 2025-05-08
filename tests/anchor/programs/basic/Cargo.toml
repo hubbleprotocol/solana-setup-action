@@ -13,6 +13,9 @@ name = "basic"
 no-entrypoint = []
 cpi = ["no-entrypoint"]
 
+[patch.crates-io]
+solana_rbpf = { git = "https://github.com/solana-labs/rbpf", tag = "v0.8.0" }
+
 [dependencies]
-anchor-lang = "0.28.0"
-ahash = "=0.8.6"
+anchor-lang = "0.29.0"
+ahash = "=0.8.5"
